@@ -35,11 +35,32 @@ Esta seção explica como preparar o ambiente para executar os modelos e reprodu
 !ls # Verifique os diretórios clonados
 ```
 
+## Estrutura do Projeto
+```bash
+screenpipe/
+ ├── screenpipe-core        → captura (tela/áudio), ffmpeg, pipes
+ ├── screenpipe-server      → API HTTP + WebSocket, streaming, busca
+ ├── screenpipe-db          → armazenamento e consultas
+ ├── screenpipe-events      → sistema de eventos
+ ├── screenpipe-audio       → pipeline de áudio
+ ├── screenpipe-vision      → OCR/visão computacional
+ └── screenpipe-app-tauri   → interface desktop (Tauri)
+```
+
 ## Modelo 1 — BGE Base (BAAI/bge-base-en-v1.5)
 
 Task: `Feature Extraction`
 
 ### Motivação:
+Antes de analisar qualquer padrão arquitetural, é necessário entender **quais partes do repositório realmente importam**.  
+O Screenpipe é um monorepo com vários módulos (core, server, db, vision, audio, events, etc.), e localizar manualmente os arquivos relevantes exigiria muito tempo.
+
+Por isso, escolhemos o modelo **BGE Base**, especializado em gerar **representações vetoriais (embeddings)** de texto e código.  
+Esses embeddings permitem comparar arquivos por **similaridade semântica**, ajudando a identificar:
+
+- quais arquivos têm conteúdo arquitetural relevante  
+- quais módulos se relacionam entre si  
+- onde estão definidas funcionalidades críticas (API, captura, pipelines, etc.)
 
 ### Objetivo:
 Modelo de embeddings, ótimo para descoberta de arquivos relevantes, não para explicação de código.
@@ -47,14 +68,18 @@ Modelo de embeddings, ótimo para descoberta de arquivos relevantes, não para e
 ### Resultado resumido da identificação
 BGE Base identificou os arquivos mais relevantes do projeto para compreender a arquitetura do servidor:
 ```bash 
-screenpipe-server/src/server.rs
-screenpipe-server/src/server.rs (rotas de streaming)
-screenpipe-server/tests/tags_test.rs
-screenpipe-server/tests/endpoint_test.rs
-screenpipe-server/src/bin/screenpipe-server.rs
+screenpipe-server/src/server.rs  
+screenpipe-server/tests/tags_test.rs  
+screenpipe-server/tests/endpoint_test.rs  
+screenpipe-server/src/bin/screenpipe-server.rs  
 ```
 
 ### Conclusão:
+
+O BGE Base foi essencial como primeira etapa da análise. Ele permitiu:
+- Identificar rapidamente onde a lógica arquitetural se concentra;
+- Mapear relações entre arquivos por similaridade;
+- Descobrir o "esqueleto" do sistema antes de analisá-lo profundamente;
 
 ## Modelo 2 - Mistralai (mistralai/Mistral-7B-Instruct-v0.3)
 
@@ -160,7 +185,6 @@ Ele se mostrou eficaz para transformar trechos de código em conhecimento arquit
 
 ---
 
-
 ## Modelo 3 — StarCoder2-3B (second-state/StarCoder2-3B-GGUF)
 
 Task: `Text Generation / Code Understanding`
@@ -171,7 +195,7 @@ Após utilizar:
 
 BGE Base → para identificar os arquivos mais relevantes no repositório
 
-DeepSeek Coder 6.7B → para análises profundas e respostas arquiteturais completas
+Mistral-7B-Instruct → para análises profundas e respostas arquiteturais completas
 
 - o próximo passo foi testar o StarCoder2-3B, um modelo menor e mais leve, com o objetivo de verificar:
 - consistência das interpretações
