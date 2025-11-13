@@ -12,7 +12,21 @@ Repositório dedicado à documentação e reprodução do processo de identifica
 !git clone https://github.com/mediar-ai/screenpipe.git
 %cd screenpipe
 !ls # Verifique os diretórios clonados
-``` 
+```
+
+## O que é o Screenpipe?
+
+O Screenpipe é uma plataforma open-source que transforma todo o histórico do seu desktop em uma fonte de contexto contínuo para aplicações de Inteligência Artificial.
+Ele captura, processa, indexa e disponibiliza (localmente) tudo o que acontece na tela e no microfone, permitindo que agentes de IA entendam o que o usuário está fazendo e construam automações sobre isso.
+
+### Saída gerada automaticamente pelo Summarizer do HuggingFace
+> *“AI app store powered by 24/7 desktop history open source.  
+> 100% local, uses 10% CPU, 4 GB ram, 15 gb/m.  
+> Plugin system called ‘pipe’ which lets you create desktop apps in Next.js in a sandboxed environment within Rust.  
+> 24/7 screen and mic recording — recording reality, one pixel at a time.  
+> Store includes Stripe integration enabling devs to monetize their apps.”*
+
+
 ## Modelo 1 — BGE Base (BAAI/bge-base-en-v1.5)
 
 Task: `Feature Extraction`
