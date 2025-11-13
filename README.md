@@ -245,3 +245,12 @@ Embora não forneça análises profundas como o DeepSeek, ele é útil como:
 - validador rápido
 - analisador de módulos menores
 - reforço para consistência das interpretações
+
+## 📊 Comparação entre os Modelos Utilizados
+
+| Modelo                             | Task HF / Tipo                     | Onde foi usado no projeto                          | Pontos fortes                                                                 | Limitações                                                                   | Papel na atividade                                          |
+|------------------------------------|------------------------------------|----------------------------------------------------|-------------------------------------------------------------------------------|-------------------------------------------------------------------------------|-------------------------------------------------------------|
+| **BAAI/bge-base-en-v1.5**          | Feature Extraction / Text Embedding | Repositório completo (`screenpipe-*`)              | Excelente para encontrar arquivos relevantes via similaridade semântica.      | Não explica código; não interpreta arquitetura.                              | Descoberta de contexto: ajuda a identificar **onde olhar**. |
+| **Mistral-7B-Instruct-v0.3**       | Text Generation / Code Understanding | `screenpipe-server`, `screenpipe-core`, `ffmpeg.rs` | Análise profunda; entende responsabilidades, camadas e interações arquiteturais. | Modelo pesado; depende de prompts bem escritos.                               | “**Arquiteto virtual**”: descreve camadas, módulos e padrões. |
+| **StarCoder2-3B-GGUF**             | Text Generation focado em código    | Funções específicas (`capture_loop.rs`, core)       | Leve e rápido; ótimo para explicar funções e dependências simples.            | Menos contexto; análise arquitetural menos completa.                          | Validador leve das análises do Mistral.                     |
+
