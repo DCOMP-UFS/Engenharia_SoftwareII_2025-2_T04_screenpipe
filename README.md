@@ -2,17 +2,11 @@
 
 Repositório dedicado à documentação e reprodução do processo de identificação de padrões arquiteturais no software Screenpipe, contendo o tutorial completo, código e artefatos necessários para a execução da atividade.
 
-## Configuração do Ambiente
-```bash
-# 1. Instalar as bibliotecas necessárias
-!pip install transformers accelerate bitsandbytes sentence-transformers Pillow datasets
-!pip install -q git+https://github.com/huggingface/peft.git  # PEFT é útil para modelos grandes
+Este repositório documenta o processo de identificação de padrões arquiteturais no software **Screenpipe**, utilizando três modelos do Hugging Face:
 
-# 2. Clonar o repositório ScreenPipe
-!git clone https://github.com/mediar-ai/screenpipe.git
-%cd screenpipe
-!ls # Verifique os diretórios clonados
-```
+- **BAAI/bge-base-en-v1.5**  
+- **mistralai/Mistral-7B-Instruct-v0.3**  
+- **second-state/StarCoder2-3B-GGUF**
 
 ## O que é o Screenpipe?
 
@@ -26,6 +20,20 @@ Ele captura, processa, indexa e disponibiliza (localmente) tudo o que acontece n
 > 24/7 screen and mic recording — recording reality, one pixel at a time.  
 > Store includes Stripe integration enabling devs to monetize their apps.”*
 
+## Configuração do Ambiente
+
+Esta seção explica como preparar o ambiente para executar os modelos e reproduzir a análise arquitetural.
+
+```bash
+# 1. Instalar as bibliotecas necessárias
+!pip install transformers accelerate bitsandbytes sentence-transformers Pillow datasets
+!pip install -q git+https://github.com/huggingface/peft.git  # PEFT é útil para modelos grandes
+
+# 2. Clonar o repositório ScreenPipe
+!git clone https://github.com/mediar-ai/screenpipe.git
+%cd screenpipe
+!ls # Verifique os diretórios clonados
+```
 
 ## Modelo 1 — BGE Base (BAAI/bge-base-en-v1.5)
 
