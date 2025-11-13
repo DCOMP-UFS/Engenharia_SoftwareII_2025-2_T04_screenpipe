@@ -155,4 +155,98 @@ O modelo forneceu respostas:
 
 Foi o modelo que gerou **as respostas mais ricas para fins arquiteturais**.
 
+Modelo 3 — StarCoder2-3B (second-state/StarCoder2-3B-GGUF)
+
+Task: Text Generation / Code Understanding
+
+Motivação
+
+Depois de usar:
+
+BGE Base → para localizar os arquivos mais relevantes no repositório
+
+DeepSeek Coder 6.7B → para análises profundas com foco na arquitetura
+
+o próximo passo foi utilizar o StarCoder2-3B como um modelo menor, barato e rápido, ideal para:
+
+validar interpretações
+
+gerar explicações “suficientemente boas”
+
+analisar módulos menores
+
+confirmar se o entendimento arquitetural já está consistente entre modelos
+
+O foco deste teste era observar se um modelo de 3B parâmetros consegue fornecer alguma utilidade arquitetural, mesmo com limitações.
+
+Objetivo
+
+O objetivo do uso do StarCoder2-3B foi:
+
+analisar trechos individuais do screenpipe-core
+
+verificar se ele identifica responsabilidades básicas do módulo
+
+checar se ele entende dependências externas (ex: FFmpeg)
+
+confirmar se ele consegue explicar o ciclo de execução de captura de tela
+
+Esse modelo não foi usado para análise arquitetural profunda, mas para validar o pipeline e testar consistência das respostas.
+
+📂 Arquivo analisado: screenpipe-core/src/capture_loop.rs
+
+🔍 Resultado produzido automaticamente pelo StarCoder2-3B (resumido)
+
+O modelo identificou:
+
+1. Responsabilidade principal
+
+O StarCoder2-3B explicou corretamente que:
+
+A função inicia a captura de tela
+
+Configura um comando FFmpeg
+
+Define FPS, dispositivo, codec e arquivo de saída
+
+Atualiza estado de gravação com set_status(true/false)
+
+Embora repetitivo, o modelo acertou a descrição da função operacional do código.
+
+2. Camada arquitetural
+
+Apesar de não usar os termos do seu framework (“core, server, pipes”), a descrição deixa claro:
+
+Trata-se de funcionalidade de captura
+
+Usa FFmpeg como mecanismo de captura
+
+Portanto → core / captura
+
+3. Componentes relacionados
+
+O modelo identifica implicitamente:
+
+dependência de FFmpeg
+
+uso da API do sistema via std::process::Command
+
+função get_ffmpeg_path()
+
+função de estado set_status()
+
+Mesmo não mencionando explicitamente o módulo, ele entendeu o fluxo externo.
+
+4. Gestão de recursos
+
+O modelo percebe que:
+
+FFmpeg é chamado como processo externo
+
+Há verificação de falha
+
+A função só liga/desliga o estado, sem watchdog
+
+Aqui ele acertou: o módulo realmente não monitora FFmpeg — apenas executa e reporta.
+
 
