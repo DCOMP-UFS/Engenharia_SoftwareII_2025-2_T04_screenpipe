@@ -155,98 +155,95 @@ O modelo forneceu respostas:
 
 Foi o modelo que gerou **as respostas mais ricas para fins arquiteturais**.
 
-Modelo 3 — StarCoder2-3B (second-state/StarCoder2-3B-GGUF)
+## Modelo 3 — StarCoder2-3B (second-state/StarCoder2-3B-GGUF)
 
-Task: Text Generation / Code Understanding
+Task: `Text Generation / Code Understanding`
 
-Motivação
+### Motivação
 
-Depois de usar:
+Após utilizar:
 
-BGE Base → para localizar os arquivos mais relevantes no repositório
+BGE Base → para identificar os arquivos mais relevantes no repositório
 
-DeepSeek Coder 6.7B → para análises profundas com foco na arquitetura
+DeepSeek Coder 6.7B → para análises profundas e respostas arquiteturais completas
 
-o próximo passo foi utilizar o StarCoder2-3B como um modelo menor, barato e rápido, ideal para:
+- o próximo passo foi testar o StarCoder2-3B, um modelo menor e mais leve, com o objetivo de verificar:
+- consistência das interpretações
+- rapidez na análise de módulos simples
+- capacidade de compreender responsabilidades básicas do código
 
-validar interpretações
+- O foco não era obter uma análise arquitetural profunda, mas sim validar o pipeline e medir até onde um modelo pequeno pode ajudar no entendimento geral.
 
-gerar explicações “suficientemente boas”
+### Objetivo
+Usar o StarCoder2-3B para:
 
-analisar módulos menores
+- Analisar trechos menores do screenpipe-core
+- Identificar a responsabilidade principal de funções isoladas
+- Compreender dependências externas (ex: FFmpeg)
+- Verificar se o modelo entende o fluxo de captura de tela
+- Validar a coerência com as respostas dos modelos anteriores
 
-confirmar se o entendimento arquitetural já está consistente entre modelos
+O modelo foi usado como um validador leve, e não como fonte primária de arquitetura.
 
-O foco deste teste era observar se um modelo de 3B parâmetros consegue fornecer alguma utilidade arquitetural, mesmo com limitações.
+### 📂 Arquivo analisado: screenpipe-core/src/capture_loop.rs
+Resultado resumido da identificação
 
-Objetivo
+O StarCoder2-3B analisou corretamente o módulo e descreveu:
 
-O objetivo do uso do StarCoder2-3B foi:
+1. **Responsabilidade principal**
+O modelo explicou que o objetivo da função é:
 
-analisar trechos individuais do screenpipe-core
+- iniciar o processo de captura de tela
+- montar o comando FFmpeg
+- definir parâmetros como FPS, codec e dispositivo
+- iniciar a gravação chamando o processo externo
+- atualizar o estado global (set_status(true/false))
+- 
+A descrição, embora simples, está alinhada funcionalmente com o papel do arquivo.
 
-verificar se ele identifica responsabilidades básicas do módulo
+2. **Camada arquitetural**
 
-checar se ele entende dependências externas (ex: FFmpeg)
+Mesmo sem usar a nomenclatura formal (“core / server / pipes”), o modelo identificou que o código:
 
-confirmar se ele consegue explicar o ciclo de execução de captura de tela
+- faz parte da lógica de captura
+- utiliza FFmpeg diretamente
+- pertence claramente ao core do sistema
 
-Esse modelo não foi usado para análise arquitetural profunda, mas para validar o pipeline e testar consistência das respostas.
+## → Conclusão: core / captura
 
-📂 Arquivo analisado: screenpipe-core/src/capture_loop.rs
+3. **Componentes relacionados**
 
-🔍 Resultado produzido automaticamente pelo StarCoder2-3B (resumido)
+O modelo identificou implicitamente que o módulo depende de:
 
-O modelo identificou:
+- FFmpeg (via Command)
+- função get_ffmpeg_path()
+- sistema operacional (processos externos)
+- função de estado set_status()
 
-1. Responsabilidade principal
+Mesmo sem nomear os módulos explicitamente, reconheceu corretamente o fluxo de dependências.
 
-O StarCoder2-3B explicou corretamente que:
+4. **Gestão de recursos**
 
-A função inicia a captura de tela
+O modelo entendeu que:
 
-Configura um comando FFmpeg
+- FFmpeg é executado como processo externo
+- há detecção básica de falhas
+- o módulo não faz gerenciamento avançado (watchdog, restart, logs)
+- apenas inicia ou finaliza a captura e atualiza o estado
 
-Define FPS, dispositivo, codec e arquivo de saída
+Essa leitura está correta: este arquivo realmente não gerencia lifecycle completo, apenas a invocação.
 
-Atualiza estado de gravação com set_status(true/false)
+### 🧠 Conclusão do StarCoder2-3B
 
-Embora repetitivo, o modelo acertou a descrição da função operacional do código.
+O modelo, mesmo sendo pequeno (3B), conseguiu:
 
-2. Camada arquitetural
+- identificar a responsabilidade operacional
+- entender dependências externas
+- categorizar a camada arquitetural
+- reconhecer corretamente as limitações do módulo
 
-Apesar de não usar os termos do seu framework (“core, server, pipes”), a descrição deixa claro:
+Embora não forneça análises profundas como o DeepSeek, ele é útil como:
 
-Trata-se de funcionalidade de captura
-
-Usa FFmpeg como mecanismo de captura
-
-Portanto → core / captura
-
-3. Componentes relacionados
-
-O modelo identifica implicitamente:
-
-dependência de FFmpeg
-
-uso da API do sistema via std::process::Command
-
-função get_ffmpeg_path()
-
-função de estado set_status()
-
-Mesmo não mencionando explicitamente o módulo, ele entendeu o fluxo externo.
-
-4. Gestão de recursos
-
-O modelo percebe que:
-
-FFmpeg é chamado como processo externo
-
-Há verificação de falha
-
-A função só liga/desliga o estado, sem watchdog
-
-Aqui ele acertou: o módulo realmente não monitora FFmpeg — apenas executa e reporta.
-
-
+- validador rápido
+- analisador de módulos menores
+- reforço para consistência das interpretações
