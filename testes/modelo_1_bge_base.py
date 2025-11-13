@@ -180,3 +180,76 @@ top_arquivos = buscar_arquivos_relevantes(query, top_k_arquivos=10)
 print("\n=== TOP ARQUIVOS MAIS RELEVANTES PARA ARQUITETURA ===\n")
 for r in top_arquivos:
     print(f"{r['score']:.4f} | {r['arquivo']} | módulo: {r['modulo']}")
+
+# =============================================================
+#   BUSCA: CORE / PIPELINE PRINCIPAL
+#   Foca na lógica central do Screenpipe: captura de tela,
+#   pipeline de processamento, integração com FFmpeg e
+#   componentes fundamentais do sistema.
+# =============================================================
+query = "ffmpeg integration, screen capture pipeline, core logic"
+
+top_arquivosCore = buscar_arquivos_relevantes(query, top_k_arquivos=5)
+
+print("\n=== TOP ARQUIVOS — CORE / PIPELINE ===\n")
+for r in top_arquivosCore:
+    print(f"{r['score']:.4f} | {r['arquivo']} | módulo: {r['modulo']}")
+
+# =============================================================
+#   BUSCA: SERVER / API / BACKEND
+#   Foca nos arquivos responsáveis pela camada de servidor:
+#   HTTP API, WebSocket, endpoints, streaming e lógica backend.
+# =============================================================
+query = "http server, websocket backend, api routes, streaming endpoints"
+
+top_arquivosServer = buscar_arquivos_relevantes(query, top_k_arquivos=5)
+
+print("\n=== TOP ARQUIVOS — SERVER / API / BACKEND ===\n")
+for r in top_arquivosServer:
+    print(f"{r['score']:.4f} | {r['arquivo']} | módulo: {r['modulo']}")
+
+
+# =============================================================
+#   BUSCA: STORAGE / DATABASE / INDEXAÇÃO
+#   Foca na camada de armazenamento do Screenpipe:
+#   base de dados, indexação, persistência e consultas.
+# =============================================================
+query = "database module, storage layer, indexing system, persistence"
+
+top_arquivosStorage = buscar_arquivos_relevantes(query, top_k_arquivos=5)
+
+print("\n=== TOP ARQUIVOS — STORAGE / DATABASE ===\n")
+for r in top_arquivosStorage:
+    print(f"{r['score']:.4f} | {r['arquivo']} | módulo: {r['modulo']}")
+
+
+# =============================================================
+#   BUSCA: VISÃO COMPUTACIONAL / OCR
+#   Foca nos arquivos relacionados à análise de imagens:
+#   OCR, visão computacional, pipelines de screenshot.
+# =============================================================
+query = "ocr, computer vision, image processing, screenshot analysis"
+
+top_arquivosVc = buscar_arquivos_relevantes(query, top_k_arquivos=5)
+
+print("\n=== TOP ARQUIVOS — VISÃO COMPUTACIONAL / OCR ===\n")
+for r in top_arquivosVc:
+    print(f"{r['score']:.4f} | {r['arquivo']} | módulo: {r['modulo']}")
+
+
+# =============================================================
+#   BUSCA: ÁUDIO / CAPTAÇÃO / PIPELINE SONORO
+#   Foca no subsistema de áudio: gravação do microfone,
+#   processamento sonoro, integração com FFmpeg e pipeline.
+# =============================================================
+query = "audio recording, microphone capture, audio pipeline, ffmpeg audio"
+
+top_arquivosAudio = buscar_arquivos_relevantes(query, top_k_arquivos=5)
+
+print("\n=== TOP ARQUIVOS — ÁUDIO / PIPELINE ===\n")
+for r in top_arquivosAudio:
+    print(f"{r['score']:.4f} | {r['arquivo']} | módulo: {r['modulo']}")
+
+
+
+
