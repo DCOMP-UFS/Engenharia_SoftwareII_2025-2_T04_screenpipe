@@ -68,10 +68,18 @@ Modelo de embeddings, ótimo para descoberta de arquivos relevantes, não para e
 ### Resultado resumido da identificação
 BGE Base identificou os arquivos mais relevantes do projeto para compreender a arquitetura do servidor:
 ```bash 
-screenpipe-server/src/server.rs  
-screenpipe-server/tests/tags_test.rs  
-screenpipe-server/tests/endpoint_test.rs  
-screenpipe-server/src/bin/screenpipe-server.rs  
+=== TOP ARQUIVOS MAIS RELEVANTES PARA ARQUITETURA ===
+
+0.6225 | /content/screenpipe/screenpipe-audio/README.md | módulo: screenpipe-audio
+0.6184 | /content/screenpipe/screenpipe-app-tauri/components/ui/icons.tsx | módulo: screenpipe-app-tauri
+0.6176 | /content/screenpipe/screenpipe-server/tests/endpoint_test.rs | módulo: screenpipe-server
+0.6050 | /content/screenpipe/screenpipe-server/Cargo.toml | módulo: screenpipe-server
+0.6015 | /content/screenpipe/screenpipe-core/src/operator/platforms/windows.rs | módulo: screenpipe-core
+0.5986 | /content/screenpipe/screenpipe-audio/tests/accuracy_test.rs | módulo: screenpipe-audio
+0.5984 | /content/screenpipe/screenpipe-app-tauri/components/onboarding.tsx | módulo: screenpipe-app-tauri
+0.5976 | /content/screenpipe/screenpipe-vision/src/apple.rs | módulo: screenpipe-vision
+0.5928 | /content/screenpipe/screenpipe-app-tauri/components/settings/ai-presets.tsx | módulo: screenpipe-app-tauri
+0.5913 | /content/screenpipe/screenpipe-app-tauri/src-tauri/src/icons.rs | módulo: screenpipe-app-tauri
 ```
 
 ### Conclusão:
