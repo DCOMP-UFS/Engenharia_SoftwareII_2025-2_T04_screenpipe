@@ -1,0 +1,41 @@
+
+=== TOP ARQUIVOS — CORE / PIPELINE ===
+
+0.7395 | /content/screenpipe/screenpipe-audio/src/utils/ffmpeg.rs | módulo: screenpipe-audio
+0.7344 | /content/screenpipe/screenpipe-server/src/video.rs | módulo: screenpipe-server
+0.7279 | /content/screenpipe/screenpipe-server/src/bin/screenpipe-server.rs | módulo: screenpipe-server
+0.7175 | /content/screenpipe/screenpipe-server/tests/video_utils_test.rs | módulo: screenpipe-server
+0.7130 | /content/screenpipe/screenpipe-app-tauri/public/CHANGELOG.md | módulo: screenpipe-app-tauri
+
+=== TOP ARQUIVOS — SERVER / API / BACKEND ===
+
+0.6637 | /content/screenpipe/screenpipe-server/src/server.rs | módulo: screenpipe-server
+0.6536 | /content/screenpipe/screenpipe-server/src/bin/screenpipe-server.rs | módulo: screenpipe-server
+0.6508 | /content/screenpipe/screenpipe-server/tests/tags_test.rs | módulo: screenpipe-server
+0.6419 | /content/screenpipe/screenpipe-server/Cargo.toml | módulo: screenpipe-server
+0.6362 | /content/screenpipe/screenpipe-server/src/embedding/mod.rs | módulo: screenpipe-server
+
+=== TOP ARQUIVOS — STORAGE / DATABASE ===
+
+0.6553 | /content/screenpipe/screenpipe-db/src/lib.rs | módulo: screenpipe-db
+0.6440 | /content/screenpipe/screenpipe-db/src/db.rs | módulo: screenpipe-db
+0.6228 | /content/screenpipe/screenpipe-server/src/bin/screenpipe-server.rs | módulo: screenpipe-server
+0.6087 | /content/screenpipe/screenpipe-db/src/migration_worker.rs | módulo: screenpipe-db
+0.6059 | /content/screenpipe/screenpipe-db/tests/db.rs | módulo: screenpipe-db
+
+=== TOP ARQUIVOS — VISÃO COMPUTACIONAL / OCR ===
+
+0.7164 | /content/screenpipe/screenpipe-vision/src/tesseract.rs | módulo: screenpipe-vision
+0.6983 | /content/screenpipe/screenpipe-server/src/add.rs | módulo: screenpipe-server
+0.6971 | /content/screenpipe/screenpipe-vision/src/core.rs | módulo: screenpipe-vision
+0.6906 | /content/screenpipe/screenpipe-events/src/custom_events/meetings.rs | módulo: screenpipe-events
+0.6831 | /content/screenpipe/screenpipe-vision/src/lib.rs | módulo: screenpipe-vision
+
+=== TOP ARQUIVOS — ÁUDIO / PIPELINE ===
+
+0.7494 | /content/screenpipe/screenpipe-audio/src/utils/mod.rs | módulo: screenpipe-audio
+0.7211 | /content/screenpipe/screenpipe-audio/src/audio_manager/manager.rs | módulo: screenpipe-audio
+0.7192 | /content/screenpipe/screenpipe-server/src/cli.rs | módulo: screenpipe-server
+0.7121 | /content/screenpipe/screenpipe-audio/src/utils/ffmpeg.rs | módulo: screenpipe-audio
+0.7106 | /content/screenpipe/screenpipe-server/src/bin/screenpipe-server.rs | módulo: screenpipe-server
+
