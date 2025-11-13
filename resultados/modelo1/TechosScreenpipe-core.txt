@@ -1,0 +1,82 @@
+================================================================================
+Arquivo: ./screenpipe-core/src/actions.rs
+Módulo: screenpipe-core
+Score: 0.704
+pub use screenpipe_actions::run;
+
+
+================================================================================
+Arquivo: ./screenpipe-core/Cargo.toml
+Módulo: screenpipe-core
+Score: 0.683
+[package]
+name = "screenpipe-core"
+version = { workspace = true }
+authors = { workspace = true }
+description = { workspace = true }
+repository = { workspace = true }
+license = { workspace = true }
+edition = { workspace = true }
+
+[dependencies]
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+which = "6.0.1"
+ffmpeg-sidecar = { git = "https://github.com/nathanbabcock/ffmpeg-sidecar", branch = "main" }
+log = "0.4.17"
+anyhow = "1.0.86"
+candle = { workspace = true }
+candle-nn = { workspace = true }
+candle-transformers = { workspace = true }
+tokenizers = { workspace = true }
+hf-hub = { workspace = true, features = [
+    "tokio",
+    "native-tls",
+] }
+http-cache-reqwest = { workspace = true }
+reqwest-middleware = { workspace = true }
+tokio = { workspace = true }
+
+# Security
+regex = { version = "1.10.6", features = ["std"], optional = true }
+lazy_static = { version = "1.4.0", optional = true }
+tempfile = "3.3.0"
+url = "2.4.0"
+
+tracing = { workspace = true }
+tracing-subscri
+
+================================================================================
+Arquivo: ./screenpipe-core/examples/win_automation.rs
+Módulo: screenpipe-core
+Score: 0.673
+use std::thread;
+use std::time::Duration;
+
+use screenpipe_core::operator::platforms;
+use screenpipe_core::operator::Selector;
+use screenpipe_core::operator::AutomationError;
+
+// like a playground, just uncomment
+fn main() -> Result<(), AutomationError> {
+    let engine = platforms::create_engine(true, true)?;
+
+    // get the root element
+    // let root_element = engine.get_root_element();
+    // println!("root element: {:?}", root_element);
+
+    // Get an element by process id
+    // let element_by_id = engine.get_element_by_id(12304)?;
+    // println!("element by pid: {:?}", element_by_id);
+
+    // get the focused element
+    // let focused_element = engine.get_focused_element()?;
+    // println!("Focused element: {:?}", focused_element);
+
+    // get all applications
+    // let applications = engine.get_applications()?;
+    // println!("running applications element: {:?}", applications);
+
+    // get an application by name
+    // let app_by_name = engine.get_application_by_name("termi
+

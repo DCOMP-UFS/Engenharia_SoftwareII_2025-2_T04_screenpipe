@@ -1,0 +1,104 @@
+================================================================================
+Arquivo: ./screenpipe-server/src/server.rs
+Módulo: screenpipe-server
+Score: 0.66
+   .await
+        {
+            return Err((
+                StatusCode::INTERNAL_SERVER_ERROR,
+                JsonResponse(json!({"error": e.to_string()})),
+            ));
+        }
+    }
+
+    Ok(JsonResponse(
+        state.db.get_speaker_by_id(speaker_id).await.unwrap(),
+    ))
+}
+
+#[oasgen]
+async fn search_speakers_handler(
+    State(state): State<Arc<AppState>>,
+    Query(request): Query<SearchSpeakersRequest>,
+) -> Result<JsonResponse<Vec<Speaker>>, (StatusCode, JsonResponse<Value>)> {
+    let search_prefix = request.name.unwrap_or_default();
+    Ok(JsonResponse(
+        state.db.search_speakers(&search_prefix).await.unwrap(),
+    ))
+}
+
+#[oasgen]
+async fn delete_speaker_handler(
+    State(state): State<Arc<AppState>>,
+    Json(payload): Json<DeleteSpeakerRequest>,
+) -> Result<JsonResponse<Value>, (StatusCode, JsonResponse<Value>)> {
+    // get audio_chunks for this speaker
+    let audio_chunks = state
+        .db
+        .get_audio_chunks_for_speaker(payload.id)
+        .await
+  
+
+================================================================================
+Arquivo: ./screenpipe-server/tests/endpoint_test.rs
+Módulo: screenpipe-server
+Score: 0.649
+ssert_eq!(search_response.data.len(), 1);
+        if let ContentItem::Audio(audio_item) = &search_response.data[0] {
+            assert!(audio_item.transcription.len() >= 20);
+        } else {
+            panic!("Expected audio item");
+        }
+
+        // Test with max_length
+        let response = app
+            .clone()
+            .oneshot(
+                Request::builder()
+                    .uri("/search?content_type=audio&max_length=10")
+                    .body(Body::empty())
+                    .unwrap(),
+            )
+            .await
+            .unwrap();
+
+        assert_eq!(response.status(), StatusCode::OK);
+        let body = to_bytes(response.into_body(), usize::MAX).await.unwrap();
+        let search_response: PaginatedResponse<ContentItem> =
+            serde_json::from_slice(&body).unwrap();
+        assert_eq!(search_response.data.len(), 1);
+
+        // Test with both min_length and max_length
+        let response = app
+            .clone()
+            .onesho
+
+================================================================================
+Arquivo: ./screenpipe-server/src/server.rs
+Módulo: screenpipe-server
+Score: 0.649
+erge(server.into_router())
+            // NOTE: websockerts and sse is not supported by openapi so we move it down here
+            .route("/stream/frames", get(stream_frames_handler))
+            .route("/ws/events", get(ws_events_handler))
+            .route("/ws/health", get(ws_health_handler))
+            .route("/frames/export", get(handle_video_export_ws))
+            .with_state(app_state)
+            .layer(cors)
+            .layer(TraceLayer::new_for_http().make_span_with(DefaultMakeSpan::default()))
+    }
+}
+
+#[oasgen]
+async fn merge_frames_handler(
+    State(state): State<Arc<AppState>>,
+    JsonResponse(payload): JsonResponse<MergeVideosRequest>,
+) -> Result<JsonResponse<MergeVideosResponse>, (StatusCode, JsonResponse<Value>)> {
+    let output_dir = state.screenpipe_dir.join("videos");
+
+    match merge_videos(payload, output_dir).await {
+        Ok(response) => Ok(JsonResponse(response)),
+        Err(e) => {
+            error!("Failed to merge frames: {}", e);
+            Er
+

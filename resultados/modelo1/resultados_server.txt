@@ -1,0 +1,5 @@
+1) ./screenpipe-server/src/server.rs
+2) ./screenpipe-server/src/server.rs
+3) ./screenpipe-server/tests/websockets_test.rs
+4) ./screenpipe-server/tests/tags_test.rs
+5) ./screenpipe-server/src/bin/screenpipe-server.rs
