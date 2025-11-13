@@ -48,15 +48,15 @@ screenpipe-server/src/bin/screenpipe-server.rs
 
 ### Conclusão:
 
-## Modelo 2 - DeepSeek Coder (deepseek-ai/deepseek-coder-6.7b-instruct)
+## Modelo 2 - Mistralai (mistralai/Mistral-7B-Instruct-v0.3)
 
-Task: `Text Generation`
+Task: `Text Generation / Code Understanding`
 
 ### Motivação:
-Depois que o modelo **BGE Base** identificou os arquivos mais relevantes do repositório (principalmente em `screenpipe-server` e `screenpipe-core`), o próximo passo foi **entender arquiteturalmente o papel de cada módulo**.
+Após o modelo BGE Base identificar os arquivos mais relevantes do repositório (especialmente em screenpipe-server, screenpipe-core e screenpipe-db), era necessário analisar arquiteturalmente cada módulo encontrado.
 
-Para isso, usamos o DeepSeek Coder como um “arquiteto de software virtual”, pedindo que ele respondesse sempre às mesmas perguntas para cada trecho de código selecionado.  
-O objetivo era obter respostas padronizadas, fáceis de comparar entre módulos.
+Para isso utilizamos o Mistral-7B-Instruct, um modelo treinado para seguir instruções e interpretar código.
+Ele foi usado como um “arquiteto de software virtual”, capaz de explicar responsabilidades, papéis e interações de cada módulo.
 
 O prompt utilizado foi:
 
@@ -71,89 +71,87 @@ O prompt utilizado foi:
 Esse conjunto de perguntas força o modelo a responder **sempre em termos arquiteturais** (responsabilidade, camada, interações e, quando aplicável, gerenciamento de plugins/pipes).
 
 ### Objetivo:
-Usar o DeepSeek Coder para:
+Usar o **Mistral-7B-Instruct** para:
 
 - Descrever a **responsabilidade principal** de cada módulo analisado  
-- Classificar cada módulo dentro de uma **camada da arquitetura** (core, captura, server/API, pipes/plugins, storage/db)  
-- Identificar os **principais componentes com os quais ele interage**  
-- No caso específico dos módulos de pipes/plugins, **explicar o ciclo de vida completo dos pipes**:
-  - download
-  - instalação
-  - execução (processos externos)
-  - monitoramento via logs
-  - watchdog e limpeza de processos
+- Classificá-lo dentro de uma **camada da arquitetura** (core, captura, server/API, pipes/plugins, storage/db)  
+- Identificar os **componentes com os quais o módulo interage**  
+- Identificar ou inferir **endpoints** (busca, streaming, WebSocket) quando aplicável  
 
-### 📂 Arquivo: `screenpipe-server/src/server.rs`
+Essa etapa complementa o BGE Base, que identifica “onde olhar”, enquanto o Mistral explica “o que o módulo faz”.
+
+### 📂 Resultados da Análise com Mistral
+
+📌 Arquivo: `screenpipe-server/src/server.rs`
 
 1. **Responsabilidade principal**  
-   O módulo gerencia a camada de API REST do Screenpipe, incluindo:
-   - operações de busca  
+   O módulo implementa a camada de **API REST e streaming** do Screenpipe, incluindo:
+   - endpoints de busca  
    - streaming de conteúdo capturado  
-   - gerenciamento da cache de quadros  
-   - controle dos pipes (PipeManager)  
-   - gerenciamento de áudio  
-   - conexão WebSocket para streaming em tempo real  
+   - gerência de caches de frames  
+   - comunicação com o `PipeManager`  
+   - integração com áudio (`AudioManager`)  
+   - suporte a WebSocket para transmissão em tempo real  
 
 2. **Camada arquitetural**  
-   ➝ **server/API**  
+   ➝ **server/API**
 
 3. **Componentes relacionados**
-   - `screenpipe_core` – captura de conteúdo e controle de pipes  
-   - `screenpipe_db` – persistência e busca  
-   - `screenpipe_audio` – gerenciamento sonoro  
-   - `screenpipe_vision` – OCR e visão computacional  
-   - `screenpipe_events` – eventos do sistema  
-   - `screenpipe_video_cache` – cache de quadros  
-   - `screenpipe_embeddings` – geração de embeddings  
+   - `screenpipe_core` — captura de tela, UI e pipes  
+   - `screenpipe_db` — banco de dados e busca  
+   - `screenpipe_audio` — gerenciamento de áudio  
+   - `screenpipe_vision` — OCR e visão computacional  
+   - `screenpipe_events` — subsistema de eventos  
+   - `screenpipe_video_cache` — cache de quadros  
+   - `embedding_endpoint` — geração de embeddings  
 
-4. **Gestão de streaming/pipes/plugins**  
-   - endpoints de WebSocket (`ws::WebSocketUpgrade`)  
-   - endpoints de streaming de frames  
-   - mecanismos de busca (`SearchQuery`)  
-   - interação com cache, vídeo e eventos em tempo real  
+4. **Streaming e busca identificados**
+   - `WebSocketUpgrade` → endpoints de streaming de eventos e frames  
+   - `SearchQuery` → endpoints de busca com paginação e múltiplos filtros  
 
 ---
 
-### 📂 Arquivo: `screenpipe-core/src/ffmpeg.rs`
+📌 Arquivo: `screenpipe-core/src/ffmpeg.rs`
 
 1. **Responsabilidade principal**  
-   Localizar o executável **FFmpeg** no sistema e retornar seu caminho.
+   Localizar o executável **FFmpeg** no sistema e retornar seu caminho para uso pelos módulos de captura.
 
 2. **Camada arquitetural**  
-   ➝ **core / infraestrutura (captura)**  
+   ➝ **core / infraestrutura de captura**
 
 3. **Componentes relacionados**
-   - módulos que precisam de FFmpeg para captura e processamento  
-   - libs externas:  
+   - módulos que dependem de FFmpeg para captura e processamento  
+   - bibliotecas auxiliares:  
      - `ffmpeg_sidecar`  
-     - `log`  
-     - `once_cell::sync`  
      - `which`  
-     - `std::env` / `std::path::PathBuf`
+     - `once_cell::sync`  
+     - `log`  
 
-4. **Processo identificado**  
-   O módulo procura o FFmpeg:
-   - no diretório do executável (Linux)  
-   - em diretórios de bibliotecas do próprio projeto  
-   - no PATH do sistema  
-   - no `$HOME/.local/bin` (macOS)  
-   - no diretório atual  
+4. **Processo identificado**
+   O módulo busca o FFmpeg em:
+   - diretórios locais (caminho do executável)  
+   - caminhos internos do projeto  
+   - variáveis de ambiente (`PATH`)  
+   - `$HOME/.local/bin` no macOS  
+   - diretório atual  
 
-   **Não instala** FFmpeg caso não encontre → funciona apenas como “localizador”, não instalador.
+   Observação: **o módulo apenas localiza o binário**, não realiza instalação.
 
 ---
 
-### 🧠 Conclusão do DeepSeek
+## 🧠 Conclusão do Mistral
 
-O modelo forneceu respostas:
+O modelo Mistral apresentou:
 
-- coerentes  
-- contextualizadas  
-- com clara identificação de camadas  
-- com entendimento real das dependências internas  
-- e descrevendo corretamente como o Screenpipe usa FFmpeg e como estrutura seu servidor  
+- respostas **coerentes e consistentes**  
+- identificação correta de **camadas arquiteturais**  
+- compreensão adequada de **responsabilidades** e **dependências**  
+- inferências corretas sobre **endpoints de busca e streaming**
 
-Foi o modelo que gerou **as respostas mais ricas para fins arquiteturais**.
+Ele se mostrou eficaz para transformar trechos de código em conhecimento arquitetural claro, fornecendo insights diretamente utilizáveis na documentação do projeto.
+
+---
+
 
 ## Modelo 3 — StarCoder2-3B (second-state/StarCoder2-3B-GGUF)
 
@@ -198,7 +196,7 @@ O modelo explicou que o objetivo da função é:
 - definir parâmetros como FPS, codec e dispositivo
 - iniciar a gravação chamando o processo externo
 - atualizar o estado global (set_status(true/false))
-- 
+  
 A descrição, embora simples, está alinhada funcionalmente com o papel do arquivo.
 
 2. **Camada arquitetural**
