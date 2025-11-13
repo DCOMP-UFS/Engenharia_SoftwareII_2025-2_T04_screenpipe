@@ -1,0 +1,63 @@
+Chunks carregados: 7758
+Exemplo: ./screenpipe/CONTRIBUTING.md | módulo: CONTRIBUTING.md
+================================================================================
+Arquivo: ./screenpipe/screenpipe-core/Cargo.toml
+Offset: 0
+Trecho:
+ [package]
+name = "screenpipe-core"
+version = { workspace = true }
+authors = { workspace = true }
+description = { workspace = true }
+repository = { workspace = true }
+license = { workspace = true }
+edition = { workspace = true }
+
+[dependencies]
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+which = "6.0.1"
+ffmpeg-sidecar = { git = "https://github.com/nathanbabcock/ffmpeg-sidecar", branch = "main" }
+log = "0.4.17"
+anyhow = "1.0.86"
+candle = { workspace = true }
+candle-nn = { workspace = true }
+candle-transformers = { workspace = true }
+tokenizers = { workspace = true }
+hf-hub = { workspace = true, features = [
+    "tokio",
+    "native-tls",
+] }
+http-cache-reqwest = { workspace = true }
+reqwest-middleware = { workspace = true }
+tokio = { workspace = true }
+
+# Security
+regex = { version = "1.10.6", features = ["std"], optional = true }
+lazy_static = { version = "1.4.0", optional = true }
+tempfile = "3.3.0"
+url = "2.4.0"
+
+tracing = { workspace = true }
+tracing-subscri
+
+### Análise do StarCoder2-3B ###
+**Qual é a responsabilidade principal desse módulo?**
+
+A responsabilidade principal desse módulo é fazer a leitura de arquivos de vídeo e capturar as informações necessárias para o processamento.
+
+**Em que parte da arquitetura ele se encaixa (core/captura, server/API, pipes/plugins, storage/db)?**
+
+O módulo se encaixa no core da aplicação, pois é o módulo responsável por fazer a leitura dos arquivos de vídeo e capturar as informações necessárias para o processamento.
+
+**Com quais outros componentes ele provavelmente interage?**
+
+Ele provavelmente interage com o módulo de processamento, pois é o módulo responsável por fazer a leitura das informações necessárias para o processamento.
+
+**Ele gerencia recursos? Como?**
+
+Sim, ele gerencia recursos. Ele cria um pool de recursos para cada arquivo de vídeo que é lido, e o libera quando o processo de processamento termina.
+
+
+================================================================================
+
