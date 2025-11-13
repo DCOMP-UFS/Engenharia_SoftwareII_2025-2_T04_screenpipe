@@ -81,6 +81,10 @@ BGE Base identificou os arquivos mais relevantes do projeto para compreender a a
 0.5928 | /content/screenpipe/screenpipe-app-tauri/components/settings/ai-presets.tsx | módulo: screenpipe-app-tauri
 0.5913 | /content/screenpipe/screenpipe-app-tauri/src-tauri/src/icons.rs | módulo: screenpipe-app-tauri
 ```
+Também realizamos buscas adicionais com o BGE Base para identificar arquivos relevantes em cada camada do sistema (core, servidor, storage, visão computacional e áudio).  
+Os resultados completos podem ser consultados no seguinte arquivo do repositório:
+📄 [Análises completas do BGE Base](resultados/modelo1/principaisarquivosModelo1.txt)
+
 
 ### Conclusão:
 
