@@ -1,0 +1,169 @@
+
+Você é um arquiteto de software experiente. Analise o código/trecho abaixo
+do projeto Screenpipe e responda:
+
+1. Qual é a responsabilidade principal desse módulo?
+2. Em que parte da arquitetura ele se encaixa (core/captura, server/API, pipes/plugins, storage/db)?
+3. Com quais outros componentes ele provavelmente interage?
+4. Destaque os endpoints de streaming e de busca.
+
+Código:
+```rust
+use axum::{
+    body::Body,
+    extract::{
+        ws::{Message, WebSocket, WebSocketUpgrade},
+        Json, Path, Query, State,
+    },
+    http::StatusCode,
+    response::{IntoResponse, Json as JsonResponse, Response},
+    routing::get,
+    serve, Router,
+};
+use oasgen::{oasgen, OaSchema, Server};
+
+use screenpipe_core::Desktop;
+
+use chrono::TimeZone;
+use screenpipe_db::{
+    ContentType, DatabaseManager, FrameData, Order, SearchMatch, SearchResult, Speaker,
+    TagContentType,
+};
+
+use tokio_util::io::ReaderStream;
+
+use tokio::fs::File;
+
+use futures::{
+    future::{try_join, try_join_all},
+    SinkExt, StreamExt,
+};
+use image::ImageFormat::{self};
+use screenpipe_events::{send_event, subscribe_to_all_events, Event as ScreenpipeEvent};
+
+use crate::{
+    embedding::embedding_endpoint::create_embeddings,
+    video::{finish_ffmpeg_process, start_ffmpeg_process, write_frame_to_ffmpeg, MAX_FPS},
+    video_cache::{AudioEntry, DeviceFrame, FrameCache, FrameMetadata, TimeSeriesFrame},
+    video_utils::{
+        extract_frame, extract_frame_from_video, extract_high_quality_frame, merge_videos,
+        validate_media, MergeVideosRequest, MergeVideosResponse, ValidateMediaParams,
+    },
+    PipeManager,
+};
+use chrono::{DateTime, Utc};
+use screenpipe_audio::{
+    audio_manager::AudioManager,
+    core::device::{
+        default_input_device, default_output_device, list_audio_devices, AudioDevice, DeviceType,
+    },
+};
+use tracing::{debug, error, info};
+
+use screenpipe_vision::monitor::{get_monitor_by_id, list_monitors};
+use screenpipe_vision::OcrEngine;
+use serde::{Deserialize, Deserializer, Serialize};
+use serde_json::{json, Value};
+use std::{
+    net::SocketAddr,
+    num::NonZeroUsize,
+    path::PathBuf,
+    sync::{atomic::Ordering, Arc},
+    time::{Duration, Instant},
+};
+
+use lru::LruCache;
+
+use tokio::{
+    net::TcpListener,
+    sync::{mpsc, Mutex},
+    time::timeout,
+};
+
+use tower_http::{cors::Any, trace::TraceLayer};
+use tower_http::{cors::CorsLayer, trace::DefaultMakeSpan};
+
+use enigo::{Enigo, Key, Settings};
+use std::str::FromStr;
+
+use crate::text_embeds::generate_embedding;
+
+use screenpipe_core::UIElement;
+use std::collections::{HashMap, HashSet};
+use uuid::Uuid; // or sentry::protocol::Uuid depending on which you want to use
+
+pub type FrameImageCache = LruCache<i64, (String, Instant)>;
+
+pub struct AppState {
+    pub db: Arc<DatabaseManager>,
+    pub audio_manager: Arc<AudioManager>,
+    pub app_start_time: DateTime<Utc>,
+    pub screenpipe_dir: PathBuf,
+    pub pipe_manager: Arc<PipeManager>,
+    pub vision_disabled: bool,
+    pub audio_disabled: bool,
+    pub ui_monitoring_enabled: bool,
+    pub enable_pipe_manager: bool,
+    pub frame_cache: Option<Arc<FrameCache>>,
+    pub frame_image_cache: Option<Arc<Mutex<FrameImageCache>>>,
+    pub element_cache: Arc<Mutex<Option<(Vec<UIElement>, Instant, String)>>>,
+}
+
+// Update the SearchQuery struct
+#[derive(OaSchema, Deserialize)]
+pub(crate) struct SearchQuery {
+    q: Option<String>,
+    #[serde(flatten)]
+    pagination: PaginationQuery,
+    #[serde(default)]
+    content_type: ContentType,
+    #[serde(default)]
+    start_time: Option<DateTime<Utc>>,
+    #[serde(default)]
+    end_time: Option<DateTime<Utc>>,
+    #[serde(default)]
+    app_name: Option<String>,
+    #[serde(default)]
+    window_name: Option<String>,
+    #[serde(default)]
+    frame_name: Option<String>,
+    #[serde(default)]
+    include_frames: bool,
+    #[serde(default)]
+    min_length: Option<usize>,
+    #[serde(default)]
+    max_length: Option<usize>,
+    #[serde(
+        deserialize_with = "from_comma_separated_array",
+        default = "default_speaker_ids"
+    )]
+    speaker_ids: Option<Vec<i64>>,
+    #[serde(default)]
+    focused: Option<bool>,
+    #[serde(default)]
+    browser_url: Option<String>,
+}
+
+#[derive(OaSchema, Deserialize)]
+pub(crate) struct PaginationQuery {
+    #[serde(default = "default_limit")]
+    #[serde(deserialize_with = "deserialize_number_from_string")]
+    limit: u32,
+    #[serde(default)]
+    #[s
+```
+
+1. O módulo principalmente se encarrega de gerenciar a API REST do Screenpipe, fornecendo endpoints para buscar e streaming de conteúdo capturado. Ele também se encarrega de gerenciar a cache de imagens de quadros, gerenciar o gerenciador de canais (PipeManager), gerenciar o gerenciador de áudio e gerenciar a conexão WebSocket para streaming de vídeo.
+
+2. Esse módulo se encaixa na parte do servidor/API da arquitetura do Screenpipe.
+
+3. Ele provavelmente interage com os seguintes componentes:
+   - screenpipe_core: para capturar o conteúdo da tela e gerenciar os canais (pipes)
+   - screenpipe_db: para armazenar e recuperar dados do banco de dados
+   - screenpipe_audio: para gerenciar o áudio
+   - screenpipe_vision: para gerenciar a visão (OCR)
+   - screenpipe_events: para gerenciar eventos
+   - screenpipe_video_cache: para gerenciar a cache de quadros de vídeo
+   - screenpipe_embeddings: para gerar embeddings de texto
+
+4. Os endpoints de streaming estão no final do código, mas não estão completos nesse trecho. No entanto, é possível identificar que eles estão relacionados à conexão WebSocket (`ws::WebSocketUpgrade`). Os endpoints de busca estão relacionados à função `search` e estão definidos na estrutura `SearchQuery`.
