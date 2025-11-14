@@ -290,11 +290,53 @@ Embora não forneça análises profundas como o DeepSeek, ele é útil como:
 - analisador de módulos menores
 - reforço para consistência das interpretações
 
+## Modelo 4 — Llama 3.1-8B (meta-llama/Meta-Llama-3.1-8B-Instruct)
+
+Task: `Análise Crítica de Qualidades Não-Funcionais (QNFs) e Trade-offs.`
+
+### Motivação
+
+Após os modelos Mistral-7B e StarCoder2-3B identificarem o padrão Microkernel/Plugin (Core em Rust, Plugins em Next.js/TypeScript), a etapa final da atividade exige uma avaliação crítica da adequação desse padrão. Utilizamos o Llama 3.1, um modelo robusto, com alta capacidade de raciocínio e especializado em seguir instruções, para atuar como um Engenheiro de Software Sênior na análise das QNFs.
+
+### Objetivo
+
+O objetivo foi alimentar o Llama 3.1 com o padrão arquitetural identificado e as QNFs cruciais para o Screenpipe (Performance e Extensibilidade), e forçá-lo a responder em termos de engenharia de software sobre a validade da arquitetura e seus trade-offs.
+
+📂 Resultados da Análise com Llama 3.1 (Análise Crítica de QNFs)
+
+A análise do Llama 3.1 validou a arquitetura híbrida como uma escolha intencional para balancear Performance e Extensibilidade.
+
+1. **Como a escolha do Rust contribui diretamente para a QNF de Performance?**
+
+O Llama 3.1 validou que o Rust no Core garante Performance através de:
+
+- Código de Baixo Nível: Gera código executável altamente otimizado e rápido.
+- Gerenciamento de Memória: O sistema de ownership do Rust evita bugs de memória e otimiza o uso de recursos, o que é crucial para uma aplicação que grava tela 24/7.
+
+Paralelismo: Suporte a concorrência eficiente, permitindo aproveitar múltiplos núcleos para captura de tela e processamento de OCR.
+
+2. **Como a estrutura de Pipes afeta a QNF de Extensibilidade?**
+
+O modelo confirmou que a estrutura Microkernel/Plugin (Pipes) em Next.js/TypeScript maximiza a Extensibilidade:
+
+- Modularidade: Novas funcionalidades (Pipes) podem ser adicionadas e removidas sem afetar o Core, garantindo estabilidade.
+- Flexibilidade: A separação de tecnologias permite que os desenvolvedores usem ferramentas amigáveis para UI e front-end (Next.js), facilitando a criação de novas extensões.
+
+3. **Qual é a principal desvantagem arquitetural (trade-off) que a modularidade e as diferentes linguagens introduzem?**
+
+O Llama 3.1 identificou corretamente a Complexidade de Integração como o principal trade-off.
+
+A necessidade de comunicar o Kernel em Rust com os Plugins em TypeScript (que rodam em um ambiente de execução diferente) introduz complexidade nas interfaces de comunicação (APIs/FFI). Este custo de engenharia é aceito em troca da Performance e Extensibilidade.
+
+### 🧠 Conclusão do Llama 3.1
+
+O Llama 3.1-8B foi o modelo mais efetivo para a tarefa de avaliação arquitetural crítica. Ele demonstrou que a arquitetura do Screenpipe é adequada e intencional, pois prioriza a Performance (no Kernel de baixo nível) e a Extensibilidade (na camada de Plugins), enquanto gerencia ativamente o trade-off da Complexidade de Integração.
+
 ## 📊 Comparação entre os Modelos Utilizados
 
-| Modelo                             | Task HF / Tipo                     | Onde foi usado no projeto                          | Pontos fortes                                                                 | Limitações                                                                   | Papel na atividade                                          |
-|------------------------------------|------------------------------------|----------------------------------------------------|-------------------------------------------------------------------------------|-------------------------------------------------------------------------------|-------------------------------------------------------------|
-| **BAAI/bge-base-en-v1.5**          | Feature Extraction / Text Embedding | Repositório completo (`screenpipe-*`)              | Excelente para encontrar arquivos relevantes via similaridade semântica.      | Não explica código; não interpreta arquitetura.                              | Descoberta de contexto: ajuda a identificar **onde olhar**. |
-| **Mistral-7B-Instruct-v0.3**       | Text Generation / Code Understanding | `screenpipe-server`, `screenpipe-core`, `ffmpeg.rs` | Análise profunda; entende responsabilidades, camadas e interações arquiteturais. | Modelo pesado; depende de prompts bem escritos.                               | “**Arquiteto virtual**”: descreve camadas, módulos e padrões. |
-| **StarCoder2-3B-GGUF**             | Text Generation focado em código    | Funções específicas (`capture_loop.rs`, core)       | Leve e rápido; ótimo para explicar funções e dependências simples.            | Menos contexto; análise arquitetural menos completa.                          | Validador leve das análises do Mistral.                     |
-
+| **Modelo** | **Task HF / Tipo** | **Onde foi usado no projeto** | **Pontos fortes** | **Limitações** | **Papel na atividade** |
+|-----------|---------------------|-------------------------------|-------------------|----------------|-------------------------|
+| **BAAI/bge-base-en-v1.5** | Feature Extraction / Text Embedding | Repositório completo (screenpipe-*) | Excelente para encontrar arquivos relevantes via similaridade semântica. | Não explica código; não interpreta arquitetura. | Descoberta de contexto: ajuda a identificar onde olhar. |
+| **Mistral-7B-Instruct-v0.3** | Text Generation / Code Understanding | Análise do Server e Core (`server.rs`, `ffmpeg.rs`) | Análise profunda; entende responsabilidades, camadas e interações arquiteturais. | Modelo pesado; depende de prompts bem escritos. | “Arquiteto virtual”: descreve camadas, módulos e padrões. |
+| **StarCoder2-3B-GGUF** | Text Generation focado em código | Funções específicas (`capture_loop.rs`, Core) | Leve e rápido; ótimo para explicar funções e dependências simples. | Menos contexto; análise arquitetural menos completa. | Validador leve e analisador de consistência. |
+| **Meta-Llama-3.1-8B-Instruct** | Text Generation / Raciocínio Lógico | Análise do padrão **Microkernel/Plugin** | Raciocínio crítico de nível sênior; articula a adequação de padrões a QNFs e trade-offs. | Mais lento para inferência do que Mistral/StarCoder2; exige prompt estruturado. | Avaliação crítica: valida padrões e trade-offs de performance e extensibilidade. |
