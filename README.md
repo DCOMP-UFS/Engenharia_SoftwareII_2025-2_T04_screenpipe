@@ -292,7 +292,7 @@ Embora não forneça análises profundas como o DeepSeek, ele é útil como:
 
 ## Modelo 4 — Llama 3.1-8B (meta-llama/Meta-Llama-3.1-8B-Instruct)
 
-Task: `Análise Crítica de Qualidades Não-Funcionais (QNFs) e Trade-offs.`
+Task: `Text Generation`
 
 ### Motivação
 
