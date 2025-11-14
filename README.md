@@ -21,19 +21,26 @@ Ele captura, processa, indexa e disponibiliza (localmente) tudo o que acontece n
 > 24/7 screen and mic recording — recording reality, one pixel at a time.  
 > Store includes Stripe integration enabling devs to monetize their apps.”*
 
-## Configuração do Ambiente
+## Configuração do Ambiente Local
 
 Esta seção explica como preparar o ambiente para executar os modelos e reproduzir a análise arquitetural.
 
 ```bash
-# 1. Instalar as bibliotecas necessárias
-!pip install transformers accelerate bitsandbytes sentence-transformers Pillow datasets
-!pip install -q git+https://github.com/huggingface/peft.git  # PEFT é útil para modelos grandes
+# 1. Clonar o repositório ScreenPipe
+git clone https://github.com/mediar-ai/screenpipe.git
+cd screenpipe
 
-# 2. Clonar o repositório ScreenPipe
-!git clone https://github.com/mediar-ai/screenpipe.git
-%cd screenpipe
-!ls # Verifique os diretórios clonados
+# 2. Criar e ativar ambiente virtual
+python -m venv venv
+source venv/bin/activate   # Linux/Mac
+venv\Scripts\activate      # Windows
+
+# 3. Instalar Dependências Necessárias
+pip install sentence-transformers
+pip install transformers
+pip install accelerate
+pip install torch
+pip install huggingface_hub
 ```
 
 ## Estrutura do Projeto
