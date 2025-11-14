@@ -2,11 +2,12 @@
 
 Repositório dedicado à documentação e reprodução do processo de identificação de padrões arquiteturais no software Screenpipe, contendo o tutorial completo, código e artefatos necessários para a execução da atividade.
 
-Este repositório documenta o processo de identificação de padrões arquiteturais no software **Screenpipe**, utilizando três modelos do Hugging Face:
+Este repositório documenta o processo de identificação de padrões arquiteturais no software **Screenpipe**, utilizando quatro modelos do Hugging Face:
 
 - **BAAI/bge-base-en-v1.5**  
 - **mistralai/Mistral-7B-Instruct-v0.3**  
 - **second-state/StarCoder2-3B-GGUF**
+- **meta-llama/Meta-Llama-3.1-8B-Instruct**
 
 ## O que é o Screenpipe?
 
