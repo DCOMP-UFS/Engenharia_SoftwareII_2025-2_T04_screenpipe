@@ -1,0 +1,12 @@
+beautifulsoup4
+tqdm
+regex
+sentence-transformers
+transformers
+accelerate
+bitsandbytes
+huggingface_hub
+Pillow
+datasets
+git+https://github.com/huggingface/peft.git
+numpy
