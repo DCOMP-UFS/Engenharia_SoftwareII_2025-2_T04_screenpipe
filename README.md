@@ -41,6 +41,7 @@ source venv/bin/activate   # Linux/Mac
 venv\Scripts\activate      # Windows
 
 # 3. Instalar Dependências Necessárias
+PARA INSTALAR AS DEPENDENCIAS CITADAS ABAIXO, SE FAZ NECESSARIO RODAR APENAS O COMANDO: `pip install -r requirements.txt`.
 pip install sentence-transformers
 pip install transformers
 pip install accelerate
