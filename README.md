@@ -13,6 +13,7 @@ Este repositório documenta o processo de identificação de padrões arquitetur
 
 O Screenpipe é uma plataforma open-source que transforma todo o histórico do seu desktop em uma fonte de contexto contínuo para aplicações de Inteligência Artificial.
 Ele captura, processa, indexa e disponibiliza (localmente) tudo o que acontece na tela e no microfone, permitindo que agentes de IA entendam o que o usuário está fazendo e construam automações sobre isso.
+Um script que ajuda a rodar e processar o Screenpipe está descrito em [Script](scripts/Tutorial-Screenpipe.md)
 
 ### Saída gerada automaticamente pelo Summarizer do HuggingFace
 > *“AI app store powered by 24/7 desktop history open source.  
@@ -20,6 +21,10 @@ Ele captura, processa, indexa e disponibiliza (localmente) tudo o que acontece n
 > Plugin system called ‘pipe’ which lets you create desktop apps in Next.js in a sandboxed environment within Rust.  
 > 24/7 screen and mic recording — recording reality, one pixel at a time.  
 > Store includes Stripe integration enabling devs to monetize their apps.”*
+
+## Ambiente utilizado
+
+Toda a nossa arquitetura utilizada, incluindo hardwares e sistemas online estão descritos no documento de [Infraestrutura](Infra.md)
 
 ## Configuração do Ambiente Local
 
